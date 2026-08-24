@@ -2,12 +2,16 @@ package com.example.oreoinsightfactory.controller;
 
 import com.example.oreoinsightfactory.dto.SaleRequest;
 import com.example.oreoinsightfactory.dto.SaleResponse;
+import com.example.oreoinsightfactory.dto.WeeklySummaryRequest;
+import com.example.oreoinsightfactory.dto.WeeklySummaryResponse;
+import com.example.oreoinsightfactory.event.ReportRequestedEvent;
 import com.example.oreoinsightfactory.model.Role;
 import com.example.oreoinsightfactory.model.Sale;
 import com.example.oreoinsightfactory.model.User;
 import com.example.oreoinsightfactory.repository.SalesRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,6 +34,7 @@ import java.util.stream.Collectors;
 public class SalesController {
 
     private final SalesRepository salesRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @PostMapping
     public ResponseEntity<SaleResponse> createSale(@Valid @RequestBody SaleRequest request, @AuthenticationPrincipal User currentUser) {
@@ -100,6 +110,46 @@ public class SalesController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venta no encontrada"));
         salesRepository.delete(sale);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/summary/weekly")
+    public ResponseEntity<WeeklySummaryResponse> requestWeeklySummary(
+            @Valid @RequestBody WeeklySummaryRequest request,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        if (currentUser.getRole() == Role.BRANCH) {
+            if (request.getBranch() == null || !request.getBranch().equals(currentUser.getBranch())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuarios BRANCH solo pueden solicitar resumenes de su propia sucursal");
+            }
+        }
+
+        Instant fromInstant = request.getFrom() != null
+                ? LocalDate.parse(request.getFrom()).atStartOfDay().toInstant(ZoneOffset.UTC)
+                : Instant.now().minus(7, ChronoUnit.DAYS);
+
+        Instant toInstant = request.getTo() != null
+                ? LocalDate.parse(request.getTo()).atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC)
+                : Instant.now();
+
+        String requestId = "req_" + UUID.randomUUID().toString().substring(0, 8);
+
+        eventPublisher.publishEvent(new ReportRequestedEvent(
+                requestId,
+                request.getBranch(),
+                fromInstant,
+                toInstant,
+                request.getEmailTo()
+        ));
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                WeeklySummaryResponse.builder()
+                        .requestId(requestId)
+                        .status("PROCESSING")
+                        .message("Su solicitud de reporte esta siendo procesada. Recibira el resumen en " + request.getEmailTo() + " en unos momentos.")
+                        .estimatedTime("30-60 segundos")
+                        .requestedAt(Instant.now())
+                        .build()
+        );
     }
 
     private SaleResponse mapToResponse(Sale sale) {
