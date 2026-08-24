@@ -1,7 +1,10 @@
 {
   "info": {
+    "_postman_id": "ff8fa9c5-e0f9-4c6e-aae7-456046b19d36",
     "name": "Oreo Insight Factory - E2E Flow",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57341338",
+    "_collection_link": "https://go.postman.co/collection/57341338-ff8fa9c5-e0f9-4c6e-aae7-456046b19d36?source=collection_link"
   },
   "item": [
     {
@@ -14,19 +17,37 @@
               "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
               "var jsonData = pm.response.json();",
               "pm.environment.set('centralUserId', jsonData.id);"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
-        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"username\": \"oreo.admin\",\n  \"email\": \"admin@oreo.com\",\n  \"password\": \"Oreo1234\",\n  \"role\": \"CENTRAL\"\n}"
         },
-        "url": "http://localhost:8080/auth/register"
-      }
+        "url": {
+          "raw": "http://localhost:8080/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "2. Login CENTRAL",
@@ -38,19 +59,37 @@
               "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
               "var jsonData = pm.response.json();",
               "pm.environment.set('centralToken', jsonData.token);"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
-        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"username\": \"oreo.admin\",\n  \"password\": \"Oreo1234\"\n}"
         },
-        "url": "http://localhost:8080/auth/login"
-      }
+        "url": {
+          "raw": "http://localhost:8080/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "3. Register BRANCH (Miraflores)",
@@ -60,19 +99,37 @@
           "script": {
             "exec": [
               "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
-        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"username\": \"miraflores.user\",\n  \"email\": \"mira@oreo.com\",\n  \"password\": \"Oreo1234\",\n  \"role\": \"BRANCH\",\n  \"branch\": \"Miraflores\"\n}"
         },
-        "url": "http://localhost:8080/auth/register"
-      }
+        "url": {
+          "raw": "http://localhost:8080/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "4. Login BRANCH",
@@ -84,19 +141,37 @@
               "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
               "var jsonData = pm.response.json();",
               "pm.environment.set('branchToken', jsonData.token);"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
-        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"username\": \"miraflores.user\",\n  \"password\": \"Oreo1234\"\n}"
         },
-        "url": "http://localhost:8080/auth/login"
-      }
+        "url": {
+          "raw": "http://localhost:8080/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "5. Seed Sales (5 Ventas)",
@@ -108,22 +183,40 @@
               "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
               "var jsonData = pm.response.json();",
               "pm.environment.set('saleId', jsonData.id);"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
         "header": [
-          {"key": "Content-Type", "value": "application/json"},
-          {"key": "Authorization", "value": "Bearer {{centralToken}}"}
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{centralToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"sku\": \"OREO_CLASSIC_12\",\n  \"units\": 25,\n  \"price\": 1.99,\n  \"branch\": \"Miraflores\",\n  \"soldAt\": \"2025-09-01T10:30:00Z\"\n}"
         },
-        "url": "http://localhost:8080/sales"
-      }
+        "url": {
+          "raw": "http://localhost:8080/sales",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "sales"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "6. List All Sales (CENTRAL)",
@@ -133,15 +226,32 @@
           "script": {
             "exec": [
               "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "GET",
-        "header": [{"key": "Authorization", "value": "Bearer {{centralToken}}"}],
-        "url": "http://localhost:8080/sales"
-      }
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{centralToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/sales",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "sales"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "7. List Sales (BRANCH Miraflores)",
@@ -151,15 +261,32 @@
           "script": {
             "exec": [
               "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "GET",
-        "header": [{"key": "Authorization", "value": "Bearer {{branchToken}}"}],
-        "url": "http://localhost:8080/sales"
-      }
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{branchToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/sales",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "sales"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "8. Request Async Weekly Summary (BRANCH)",
@@ -171,22 +298,42 @@
               "pm.test('Status code is 202', function () { pm.response.to.have.status(202); });",
               "var jsonData = pm.response.json();",
               "pm.expect(jsonData).to.have.property('requestId');"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
         "header": [
-          {"key": "Content-Type", "value": "application/json"},
-          {"key": "Authorization", "value": "Bearer {{branchToken}}"}
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{branchToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"from\": \"2025-09-01\",\n  \"to\": \"2025-09-07\",\n  \"branch\": \"Miraflores\",\n  \"emailTo\": \"gerente@oreo.com\"\n}"
         },
-        "url": "http://localhost:8080/sales/summary/weekly"
-      }
+        "url": {
+          "raw": "http://localhost:8080/sales/summary/weekly",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "sales",
+            "summary",
+            "weekly"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "9. Create Sale Other Branch (BRANCH - Expect 403)",
@@ -196,22 +343,40 @@
           "script": {
             "exec": [
               "pm.test('Status code is 403 Forbidden', function () { pm.response.to.have.status(403); });"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "POST",
         "header": [
-          {"key": "Content-Type", "value": "application/json"},
-          {"key": "Authorization", "value": "Bearer {{branchToken}}"}
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{branchToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"sku\": \"OREO_THINS\",\n  \"units\": 30,\n  \"price\": 2.19,\n  \"branch\": \"San Isidro\",\n  \"soldAt\": \"2025-09-03T11:05:00Z\"\n}"
         },
-        "url": "http://localhost:8080/sales"
-      }
+        "url": {
+          "raw": "http://localhost:8080/sales",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "sales"
+          ]
+        }
+      },
+      "response": []
     },
     {
       "name": "10. Delete Sale (CENTRAL)",
@@ -221,15 +386,43 @@
           "script": {
             "exec": [
               "pm.test('Status code is 204 No Content', function () { pm.response.to.have.status(204); });"
-            ]
+            ],
+            "type": "text/javascript"
           }
         }
       ],
       "request": {
         "method": "DELETE",
-        "header": [{"key": "Authorization", "value": "Bearer {{centralToken}}"}],
-        "url": "http://localhost:8080/sales/{{saleId}}"
-      }
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{centralToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/sales/{{saleId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "sales",
+            "{{saleId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "bearer_token_0cg4",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0r79",
+      "secret": true
     }
   ]
 }
